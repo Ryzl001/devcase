@@ -6,6 +6,8 @@ const users = require("./routes/api/users");
 const profile = require("./routes/api/profile");
 const posts = require("./routes/api/posts");
 
+const adminUsers = require("./routes/api/admin/users");
+
 const app = express();
 
 // Body parser middleware
@@ -27,6 +29,8 @@ app.get("/", (req, res) => res.send("Hello World"));
 app.use("/api/users", users);
 app.use("/api/profile", profile);
 app.use("/api/posts", posts);
+
+app.use("/api/admin/users", adminUsers);
 
 const port = process.env.PORT || 5000;
 
