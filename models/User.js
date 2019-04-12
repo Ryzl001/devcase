@@ -18,6 +18,18 @@ const UserSchema = new Schema({
   avatar: {
     type: String
   },
+  userItems: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "userItems"
+    }
+  ],
+  role: {
+    isAdmin: {
+      type: Boolean,
+      default: false
+    }
+  },
   date: {
     type: Date,
     default: Date.now

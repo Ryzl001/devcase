@@ -9,6 +9,9 @@ const keys = require("../../config/keys");
 // Load Input Validation
 const validateLoginInput = require("../../validation/login");
 
+// Load UserItems Model
+const UserItems = require("../../models/UserItems");
+
 // Load User Model
 const User = require("../../models/User");
 
@@ -109,5 +112,41 @@ router.get(
     });
   }
 );
+
+// @route   POST api/users/raffle
+// @desc    losowanie skina
+// @access  Private
+router.post(
+  "/raffle",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    // console.log(req.user);
+    // szukamy user
+    User.findById(req.user.id)
+      .then(user => {
+        UserItems.create({
+          userId: req.user.id,
+          marketHashName: "pistol",
+          status: 0,
+          iconUrl: "http://google.com"
+        }).then(userItem => {
+          user.userItems.push(userItem);
+          user.save();
+          res.json({ msg: "item created and added to userItems" });
+        });
+      })
+      .catch(err => console.log(err));
+  }
+);
+
+// @route   PATCH api/users/:id
+// @desc    Update user
+// @access  Public
+router.patch("/:id", (req, res) => {
+  console.log(req.body);
+  User.findByIdAndUpdate(req.params.id, req.body)
+    .then(user => res.json(user))
+    .catch(err => console.log(err));
+});
 
 module.exports = router;
