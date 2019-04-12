@@ -139,12 +139,12 @@ router.post(
   }
 );
 
-// @route   PATCH api/users/:id
+// @route   POST api/users/:id
 // @desc    Update user
 // @access  Public
-router.patch("/:id", (req, res) => {
+router.post("/:id", (req, res) => {
   console.log(req.body);
-  User.findByIdAndUpdate(req.params.id, req.body)
+  User.findByIdAndUpdate(req.params.id, req.body, { new: true })
     .then(user => res.json(user))
     .catch(err => console.log(err));
 });
