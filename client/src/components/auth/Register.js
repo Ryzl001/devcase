@@ -1,12 +1,16 @@
 import React, { Component } from "react";
+import { Field, reduxForm } from "redux-form";
 
 class Register extends Component {
   render() {
     return (
-      <div>
-        <h1>Register</h1>
-      </div>
+      <form>
+        <Field />
+      </form>
     );
   }
 }
-export default Register;
+export default reduxForm({
+  // nazwa formularza
+  form: "register"
+})(Register);
