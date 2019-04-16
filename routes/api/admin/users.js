@@ -15,8 +15,8 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     User.find({})
-      .populate("userItems")
-      .exec()
+      // .populate("userItems")
+      // .exec()
       .then(response => res.json({ response }))
       .catch(err => console.log(err));
   }
