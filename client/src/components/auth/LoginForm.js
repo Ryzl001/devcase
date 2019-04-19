@@ -1,60 +1,86 @@
 import React, { Component } from "react";
 import { Field, reduxForm } from "redux-form";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import classnames from "classnames";
 
-import { loginUser } from "../../actions";
+import history from "../../history";
+import { loginUser } from "../../actions/authActions";
 
 class LoginForm extends Component {
+  state = {
+    errors: {}
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.auth.isAuthenticated) {
+      history.push("/dashboard");
+    }
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
   renderInput = formProps => {
     // console.log(formProps);
     return (
-      <div className="field">
-        <label>{formProps.label}</label>
+      <>
         <input
+          placeholder={formProps.placeholder}
+          className={formProps.className}
           // wykorzystujemy właściwości formProps
           onChange={formProps.input.onChange}
           value={formProps.input.value}
         />
-      </div>
+      </>
     );
   };
 
   onSubmit = formValues => {
     this.props.loginUser(formValues);
+    // console.log(this.props);
   };
   render() {
-    console.log(this.props);
-    const { auth } = this.props;
+    const { errors } = this.state;
     return (
       <div className="register">
         <div className="container">
           <div className="row">
-            <div className="col-md8 m-auto">
-              <h1 className="display-4 text-center">SignUp</h1>
-              <p className="lead text-center">Login</p>
-              <form
-                onSubmit={this.props.handleSubmit(this.onSubmit)}
-                className="ui form"
-              >
-                <div className="ui field">
+            <div className="col-md-8 m-auto">
+              <h1 className="display-4 text-center">Log In</h1>
+              <p className="lead text-center">
+                Sign in to your DevConnector account
+              </p>
+              <form onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                <div className="form-group">
                   <Field
+                    className={classnames("form-control form-control-lg", {
+                      "is-invalid": errors.email
+                    })}
+                    placeholder="Email"
                     name="email"
                     component={this.renderInput}
-                    label="Email:"
                   />
-                  <div style={{ color: "red" }}>
-                    {auth.errors ? auth.errors.email : ""}
-                  </div>
+                  {errors.email && (
+                    <div className="invalid-feedback">{errors.email}</div>
+                  )}
+                  <small className="form-text text-muted">
+                    This site uses Gravatar so if you want a profile image, use
+                    a Gravatar email
+                  </small>
                 </div>
-                <div className="ui field">
+                <div className="form-group">
                   <Field
+                    className={classnames("form-control form-control-lg", {
+                      "is-invalid": errors.password
+                    })}
+                    placeholder="Password"
                     name="password"
                     component={this.renderInput}
                     label="Password:"
                   />
-                  <div style={{ color: "red" }}>
-                    {auth.errors ? auth.errors.password : ""}
-                  </div>
+                  {errors.password && (
+                    <div className="invalid-feedback">{errors.password}</div>
+                  )}
                 </div>
 
                 <button className="ui button primary right floated">
@@ -70,10 +96,15 @@ class LoginForm extends Component {
 }
 
 // console.log(this.props);
+LoginForm.propTypes = {
+  loginUser: PropTypes.func.isRequired,
+  auth: PropTypes.object,
+  errors: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => {
-  console.log(state);
-  return { auth: state.auth };
+  // console.log(state);
+  return { auth: state.auth, errors: state.errors };
 };
 
 const formWrapped = reduxForm({

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Field, reduxForm } from "redux-form";
 import { connect } from "react-redux";
 import classnames from "classnames";
@@ -40,7 +41,7 @@ class RegisterForm extends Component {
       <div className="register">
         <div className="container">
           <div className="row">
-            <div className="col-md8 m-auto">
+            <div className="col-md-8 m-auto">
               <h1 className="display-4 text-center">SignUp</h1>
               <p className="lead text-center">
                 Create your DevConnector account
@@ -117,7 +118,11 @@ class RegisterForm extends Component {
   }
 }
 
-// console.log(this.props);
+RegisterForm.propTypes = {
+  registerUser: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => {
   // console.log(state);
