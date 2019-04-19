@@ -8,9 +8,11 @@ import "./index.css";
 import App from "./App";
 import reducers from "./reducers";
 
+const initialState = {};
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
   reducers,
+  initialState,
   composeEnhancers(applyMiddleware(reduxThunk))
 );
 

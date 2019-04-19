@@ -1,31 +1,41 @@
 import React, { Component } from "react";
 import { Field, reduxForm } from "redux-form";
 import { connect } from "react-redux";
+import classnames from "classnames";
 
-import { registerUser } from "../../actions";
+import { registerUser } from "../../actions/authActions";
 
 class RegisterForm extends Component {
+  state = {
+    errors: {}
+  };
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({ errors: nextProps.errors });
+    }
+  }
   renderInput = formProps => {
     // console.log(formProps);
     return (
-      <div className="field">
-        <label>{formProps.label}</label>
+      <>
         <input
+          placeholder={formProps.placeholder}
+          className={formProps.className}
           // wykorzystujemy właściwości formProps
           onChange={formProps.input.onChange}
           value={formProps.input.value}
         />
-      </div>
+      </>
     );
   };
 
   onSubmit = formValues => {
     this.props.registerUser(formValues);
+    // console.log(this.props);
   };
   render() {
-    const { auth } = this.props;
-    console.log(this.props);
-
+    const { errors } = this.state;
     return (
       <div className="register">
         <div className="container">
@@ -35,50 +45,66 @@ class RegisterForm extends Component {
               <p className="lead text-center">
                 Create your DevConnector account
               </p>
-              <form
-                onSubmit={this.props.handleSubmit(this.onSubmit)}
-                className="ui form"
-              >
-                <div className="field">
+              <form onSubmit={this.props.handleSubmit(this.onSubmit)}>
+                <div className="form-group">
                   <Field
+                    className={classnames("form-control form-control-lg", {
+                      "is-invalid": errors.name
+                    })}
+                    placeholder="Name"
                     name="name"
                     component={this.renderInput}
-                    label="Name:"
                   />
-                  <div style={{ color: "red" }}>
-                    {auth.errors ? auth.errors.name : ""}
-                  </div>
+                  {errors.name && (
+                    <div className="invalid-feedback">{errors.name}</div>
+                  )}
                 </div>
-                <div className="ui field">
+                <div className="form-group">
                   <Field
+                    className={classnames("form-control form-control-lg", {
+                      "is-invalid": errors.email
+                    })}
+                    placeholder="Email"
                     name="email"
                     component={this.renderInput}
-                    label="Email:"
                   />
-                  <div style={{ color: "red" }}>
-                    {auth.errors ? auth.errors.email : ""}
-                  </div>
+                  {errors.email && (
+                    <div className="invalid-feedback">{errors.email}</div>
+                  )}
+                  <small className="form-text text-muted">
+                    This site uses Gravatar so if you want a profile image, use
+                    a Gravatar email
+                  </small>
                 </div>
-                <div className="ui field">
+                <div className="form-group">
                   <Field
+                    className={classnames("form-control form-control-lg", {
+                      "is-invalid": errors.password
+                    })}
+                    placeholder="Password"
                     name="password"
                     component={this.renderInput}
                     label="Password:"
                   />
-                  <div style={{ color: "red" }}>
-                    {auth.errors ? auth.errors.password : ""}
-                  </div>
+                  {errors.password && (
+                    <div className="invalid-feedback">{errors.password}</div>
+                  )}
                 </div>
-                <div className="ui field">
+                <div className="form-group">
                   <Field
+                    className={classnames("form-control form-control-lg", {
+                      "is-invalid": errors.password2
+                    })}
+                    placeholder="Confirm Password"
                     name="password2"
                     component={this.renderInput}
                     label="Confirm Password:"
                   />
-                  <div style={{ color: "red" }}>
-                    {auth.errors ? auth.errors.password2 : ""}
-                  </div>
+                  {errors.password2 && (
+                    <div className="invalid-feedback">{errors.password2}</div>
+                  )}
                 </div>
+
                 <button className="ui button primary right floated">
                   Submit
                 </button>
@@ -95,7 +121,7 @@ class RegisterForm extends Component {
 
 const mapStateToProps = state => {
   // console.log(state);
-  return { auth: state.auth };
+  return { auth: state.auth, errors: state.errors };
 };
 
 const formWrapped = reduxForm({

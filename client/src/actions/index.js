@@ -5,18 +5,14 @@ import history from "../history";
 export const registerUser = formValues => dispatch => {
   axios
     .post("/api/users/register", formValues)
-    .then(res =>
-      dispatch({
-        type: "REGISTER_USER",
-        payload: { message: "User Created", statusText: "OK" }
-      })
-    )
-    .catch(err =>
+    .then(res => history.push("/login"))
+    .catch(err => {
+      history.push("/login");
       dispatch({
         type: "REGISTER_USER",
         payload: err.response
-      })
-    );
+      });
+    });
 };
 
 export const loginUser = formValues => dispatch => {
