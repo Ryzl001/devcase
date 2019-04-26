@@ -17,6 +17,7 @@ module.exports = passport => {
       User.findById(jwt_payload.id)
         .then(user => {
           if (user) {
+            // console.log(user);
             // zwracamy drugi paramert done z parametrami
             // pierwszy - null (nie ma errorów)
             // drugi user

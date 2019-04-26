@@ -2,15 +2,21 @@ import React, { Component } from "react";
 import { Field, reduxForm } from "redux-form";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import classnames from "classnames";
 
 import history from "../../history";
 import { loginUser } from "../../actions/authActions";
+import { renderInput } from '../common/RenderInput.js'
 
 class LoginForm extends Component {
   state = {
     errors: {}
   };
+
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      history.push("/dashboard");
+    }
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.auth.isAuthenticated) {
@@ -20,20 +26,6 @@ class LoginForm extends Component {
       this.setState({ errors: nextProps.errors });
     }
   }
-  renderInput = formProps => {
-    // console.log(formProps);
-    return (
-      <>
-        <input
-          placeholder={formProps.placeholder}
-          className={formProps.className}
-          // wykorzystujemy właściwości formProps
-          onChange={formProps.input.onChange}
-          value={formProps.input.value}
-        />
-      </>
-    );
-  };
 
   onSubmit = formValues => {
     this.props.loginUser(formValues);
@@ -53,12 +45,10 @@ class LoginForm extends Component {
               <form onSubmit={this.props.handleSubmit(this.onSubmit)}>
                 <div className="form-group">
                   <Field
-                    className={classnames("form-control form-control-lg", {
-                      "is-invalid": errors.email
-                    })}
                     placeholder="Email"
                     name="email"
-                    component={this.renderInput}
+                    component={renderInput}
+                    error={errors.email}
                   />
                   {errors.email && (
                     <div className="invalid-feedback">{errors.email}</div>
@@ -70,13 +60,12 @@ class LoginForm extends Component {
                 </div>
                 <div className="form-group">
                   <Field
-                    className={classnames("form-control form-control-lg", {
-                      "is-invalid": errors.password
-                    })}
+                    
+                    type="password"
                     placeholder="Password"
                     name="password"
-                    component={this.renderInput}
-                    label="Password:"
+                    component={renderInput}
+                    error={errors.password}
                   />
                   {errors.password && (
                     <div className="invalid-feedback">{errors.password}</div>

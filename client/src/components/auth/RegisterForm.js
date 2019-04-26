@@ -2,34 +2,26 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Field, reduxForm } from "redux-form";
 import { connect } from "react-redux";
-import classnames from "classnames";
+import history from "../../history";
 
 import { registerUser } from "../../actions/authActions";
+import { renderInput } from '../common/RenderInput'
 
 class RegisterForm extends Component {
   state = {
     errors: {}
   };
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      history.push("/dashboard");
+    }
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
     }
   }
-  renderInput = formProps => {
-    // console.log(formProps);
-    return (
-      <>
-        <input
-          placeholder={formProps.placeholder}
-          className={formProps.className}
-          // wykorzystujemy właściwości formProps
-          onChange={formProps.input.onChange}
-          value={formProps.input.value}
-        />
-      </>
-    );
-  };
 
   onSubmit = formValues => {
     this.props.registerUser(formValues);
@@ -49,12 +41,10 @@ class RegisterForm extends Component {
               <form onSubmit={this.props.handleSubmit(this.onSubmit)}>
                 <div className="form-group">
                   <Field
-                    className={classnames("form-control form-control-lg", {
-                      "is-invalid": errors.name
-                    })}
                     placeholder="Name"
                     name="name"
-                    component={this.renderInput}
+                    component={renderInput}
+                    error={errors.name}
                   />
                   {errors.name && (
                     <div className="invalid-feedback">{errors.name}</div>
@@ -62,12 +52,10 @@ class RegisterForm extends Component {
                 </div>
                 <div className="form-group">
                   <Field
-                    className={classnames("form-control form-control-lg", {
-                      "is-invalid": errors.email
-                    })}
                     placeholder="Email"
                     name="email"
-                    component={this.renderInput}
+                    component={renderInput}
+                    error={errors.email}
                   />
                   {errors.email && (
                     <div className="invalid-feedback">{errors.email}</div>
@@ -78,14 +66,12 @@ class RegisterForm extends Component {
                   </small>
                 </div>
                 <div className="form-group">
-                  <Field
-                    className={classnames("form-control form-control-lg", {
-                      "is-invalid": errors.password
-                    })}
+                <Field
+                    type="password"
                     placeholder="Password"
                     name="password"
-                    component={this.renderInput}
-                    label="Password:"
+                    component={renderInput}
+                    error={errors.password}
                   />
                   {errors.password && (
                     <div className="invalid-feedback">{errors.password}</div>
@@ -93,19 +79,16 @@ class RegisterForm extends Component {
                 </div>
                 <div className="form-group">
                   <Field
-                    className={classnames("form-control form-control-lg", {
-                      "is-invalid": errors.password2
-                    })}
+                    type="password2"
                     placeholder="Confirm Password"
                     name="password2"
-                    component={this.renderInput}
-                    label="Confirm Password:"
+                    component={renderInput}
+                    error={errors.password2}
                   />
                   {errors.password2 && (
                     <div className="invalid-feedback">{errors.password2}</div>
                   )}
                 </div>
-
                 <button className="ui button primary right floated">
                   Submit
                 </button>
